@@ -13,9 +13,9 @@ import gift.repository.member.MemberJpaRepository;
 import gift.repository.product.ProductJpaRepository;
 import gift.repository.wish.WishJpaRepository;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,17 +37,9 @@ public class WishServiceImpl implements WishService {
   }
 
   public List<WishResponseDto> findByMemberId(Long memberId) {
-    List<Wish> allWish = wishRepository.findByMemberId(memberId);
-    List<WishResponseDto> responseDtoList = new ArrayList<>();
-    for (Wish wish : allWish) {
-      Optional<Product> productById = productRepository.findById(wish.getProduct().getId());
-      Product product = productById.get();
-      WishResponseDto responseDto = new WishResponseDto(wish.getId(),
-          new ProductResponseDto(wish.getProduct()),
-          wish.getQuantity());
-      responseDtoList.add(responseDto);
-    }
-    return responseDtoList;
+    return wishRepository.findByMemberId(memberId).stream().map(
+        wish -> new WishResponseDto(wish.getId(), new ProductResponseDto(wish.getProduct()),
+            wish.getQuantity())).collect(Collectors.toList());
   }
 
   @Override
