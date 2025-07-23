@@ -8,8 +8,8 @@ import gift.exception.notfound.ProductNotFoundException;
 import gift.repository.option.OptionJpaRepository;
 import gift.repository.product.ProductJpaRepository;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,13 +27,8 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public List<ProductResponseDto> findAllProduct() {
-    List<Product> allProduct = productRepository.findAll();
-    List<ProductResponseDto> responseDtoList = new ArrayList<>();
-    for (Product product : allProduct) {
-      ProductResponseDto responseDto = new ProductResponseDto(product);
-      responseDtoList.add(responseDto);
-    }
-    return responseDtoList;
+    return productRepository.findAll().stream().map(ProductResponseDto::new)
+        .collect(Collectors.toList());
   }
 
   @Override
