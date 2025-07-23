@@ -78,7 +78,6 @@ public class MemberServiceImpl implements MemberService {
     Member member = repository.findById(id)
         .orElseThrow(() -> new MemberNotFoundException("member가 없습니다"));
     member.update(requestDto.getEmail(), requestDto.getPassword());
-//    repository.save(member);
     return new MemberResponseDto(id, member.getEmail(), member.getPassword());
   }
 
