@@ -1,6 +1,6 @@
 package gift.service.member;
 
-import gift.JwtProvider;
+import gift.config.JwtProvider;
 import gift.dto.member.MemberRequestDto;
 import gift.dto.member.MemberResponseDto;
 import gift.entity.Member;
