@@ -25,7 +25,6 @@ public class KakaoLoginController {
   public ResponseEntity<Void> getAuthorizationCode(
       @RequestParam(name = "code") String authorizationCode) {
     String token = service.getToken(authorizationCode);
-    System.out.println(token);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }
