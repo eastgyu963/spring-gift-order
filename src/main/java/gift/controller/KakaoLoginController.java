@@ -1,5 +1,6 @@
-package gift;
+package gift.controller;
 
+import gift.service.KakaoLoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
