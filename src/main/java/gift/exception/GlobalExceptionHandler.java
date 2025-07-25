@@ -87,4 +87,12 @@ public class GlobalExceptionHandler {
                 exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(value = KakaoLoginTimeoutException.class)
+    public ResponseEntity<CustomErrorResponse> handleKakaoLoginTimeoutException(
+            KakaoLoginTimeoutException exception) {
+        CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
