@@ -8,29 +8,36 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 public class KakaoOAuthClient {
 
-    private final RestClient restclient;
-    @Value("${kakao.rest-api-key}")
-    private String restApiKey;
-    @Value(("${kakao.redirect-uri}"))
-    private String redirectUri;
+    private final String baseUrl = "https://kauth.kakao.com";
 
-    public KakaoOAuthClient(RestClient.Builder builder) {
+    private final RestClient restclient;
+    private final String restApiKey;
+    private final String redirectUri;
+
+    public KakaoOAuthClient(RestClient.Builder builder,
+                            @Value("${kakao.rest-api-key}") String restApiKey,
+                            @Value(("${kakao.redirect-uri}")) String redirectUri) {
         this.restclient = RestClient.builder()
-                .baseUrl("https://kauth.kakao.com")
+                .baseUrl(baseUrl)
                 .build();
+        this.restApiKey = restApiKey;
+        this.redirectUri = redirectUri;
     }
 
     public String getRedirectUrl() {
         String url = "/oauth/authorize";
-        return "https://kauth.kakao.com" + url +
-                "?scope=talk_message" +
-                "&response_type=code" +
-                "&client_id=" + restApiKey +
-                "&redirect_uri=" + redirectUri;
+        return UriComponentsBuilder
+                .fromUriString("https://kauth.kakao.com/oauth/authorize")
+                .queryParam("scope", "talk_message")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", restApiKey)
+                .queryParam("redirect_uri", redirectUri)
+                .toUriString();
     }
 
     public String getToken(String authorizationCode) {
