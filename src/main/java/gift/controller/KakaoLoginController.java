@@ -1,6 +1,8 @@
 package gift.controller;
 
 import gift.auth.KakaoOAuthClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,21 +12,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class KakaoLoginController {
 
-    private final KakaoOAuthClient service;
+    private static final Logger log = LoggerFactory.getLogger(KakaoLoginController.class);
+    private final KakaoOAuthClient oAuthClient;
 
-    public KakaoLoginController(KakaoOAuthClient service) {
-        this.service = service;
+    public KakaoLoginController(KakaoOAuthClient oAuthClient) {
+        this.oAuthClient = oAuthClient;
     }
 
     @GetMapping("/kakao/login")
     public String redirect() {
-        return "redirect:" + service.getRedirectUrl();
+        return "redirect:" + oAuthClient.getRedirectUrl();
     }
 
     @GetMapping
     public ResponseEntity<Void> getAuthorizationCode(
             @RequestParam(name = "code") String authorizationCode) {
-        String token = service.getToken(authorizationCode);
+        String token = oAuthClient.getToken(authorizationCode);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
