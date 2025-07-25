@@ -2,6 +2,7 @@ package gift.auth;
 
 
 import gift.dto.KakaoAccessTokenResponse;
+import gift.exception.KakaoApiResponseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -54,6 +55,9 @@ public class KakaoOAuthClient {
                 .body(body)
                 .retrieve()
                 .body(KakaoAccessTokenResponse.class);
+        if (response == null) {
+            throw new KakaoApiResponseException("카카오 api 응답 오류가 발생");
+        }
         return response.getAccessToken();
     }
 }
