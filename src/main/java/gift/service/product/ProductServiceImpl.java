@@ -8,8 +8,8 @@ import gift.exception.notfound.ProductNotFoundException;
 import gift.repository.option.OptionJpaRepository;
 import gift.repository.product.ProductJpaRepository;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,13 +27,8 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public List<ProductResponseDto> findAllProduct() {
-    List<Product> allProduct = productRepository.findAll();
-    List<ProductResponseDto> responseDtoList = new ArrayList<>();
-    for (Product product : allProduct) {
-      ProductResponseDto responseDto = new ProductResponseDto(product);
-      responseDtoList.add(responseDto);
-    }
-    return responseDtoList;
+    return productRepository.findAll().stream().map(ProductResponseDto::new)
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -51,22 +46,18 @@ public class ProductServiceImpl implements ProductService {
   public ProductResponseDto createProduct(ProductRequestDto requestDto) {
     Product checkProduct = new Product(requestDto.getName(), requestDto.getPrice(),
         requestDto.getImageUrl());
-    if (checkProduct.isNameHasWord("카카오") && !requestDto.getMdOk()) {
-      throw new NameHasKakaoException("상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.");
-    }
+    validateKakaoNameApproval(checkProduct, requestDto);
     Product product = productRepository.save(
-        new Product(requestDto.getName(), requestDto.getPrice(),
-            requestDto.getImageUrl()));
+        new Product(requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl()));
     return new ProductResponseDto(product);
   }
+
 
   @Transactional
   public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
     Product product = productRepository.findById(id)
         .orElseThrow(() -> new ProductNotFoundException("product가 없습니다."));
-    if (product.isNameHasWord("카카오") && !requestDto.getMdOk()) {
-      throw new NameHasKakaoException("상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.");
-    }
+    validateKakaoNameApproval(product, requestDto);
     product.update(requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
     return new ProductResponseDto(id, product.getName(), product.getPrice(),
         product.getImageUrl());
@@ -76,5 +67,11 @@ public class ProductServiceImpl implements ProductService {
   public void deleteProduct(Long id) {
     optionRepository.deleteByProductId(id);
     productRepository.deleteById(id);
+  }
+
+  private void validateKakaoNameApproval(Product product, ProductRequestDto requestDto) {
+    if (product.isNameHasWord("카카오") && !requestDto.getMdOk()) {
+      throw new NameHasKakaoException("상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.");
+    }
   }
 }

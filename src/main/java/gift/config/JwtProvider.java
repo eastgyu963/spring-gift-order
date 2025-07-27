@@ -1,4 +1,4 @@
-package gift;
+package gift.config;
 
 import gift.entity.Member;
 import gift.entity.Token;

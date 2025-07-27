@@ -56,6 +56,16 @@ public class ProductRepositoryTest {
     assertThat(result.getContent().size()).isEqualTo(5);
     assertThat(result.getTotalElements()).isEqualTo(22);//datasql로 들어가는 초기데이터로 인해 +1
     assertThat(result.getTotalPages()).isEqualTo(5);
+
+    assertThat(result.getContent().get(0).getName()).isEqualTo("물통");
+    assertThat(result.getContent().get(0).getPrice()).isEqualTo(1000L);
+    assertThat(result.getContent().get(0).getImageUrl()).isEqualTo("https://www.naver.com");
+    for (int i = 1; i < 5; i++) {
+      assertThat(result.getContent().get(i).getName()).isEqualTo("이름");
+      assertThat(result.getContent().get(i).getPrice()).isEqualTo(1L);
+      assertThat(result.getContent().get(i).getImageUrl()).isEqualTo("https://asd");
+    }
+
   }
 
 
