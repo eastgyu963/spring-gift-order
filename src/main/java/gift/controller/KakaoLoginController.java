@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class KakaoLoginController {
 
-  private static final Logger log = LoggerFactory.getLogger(KakaoLoginController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(KakaoLoginController.class);
   private final String AuthorizationCategory = "Bearer ";
   private final KakaoLoginService service;
 
