@@ -1,16 +1,21 @@
 package gift.dto;
 
 public class KakaoUserProperty {
-    private Long id;
 
-    public KakaoUserProperty(Long id) {
-        this.id = id;
-    }
+  private Long id;
 
-    public KakaoUserProperty() {
-    }
+  public KakaoUserProperty(Long id) {
+    this.id = id;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public KakaoUserProperty() {
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public String makeKakaoEmail() {
+    return "kakaouser" + this.id + "@kakao.com";
+  }
 }

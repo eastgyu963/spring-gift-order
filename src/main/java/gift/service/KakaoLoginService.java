@@ -32,7 +32,7 @@ public class KakaoLoginService {
   public Token loginWithAuthorizationCode(String authorizationCode) {
     KakaoUserProperty userProperty = kakaoOAuthClient.getKakaoUserProperty(
         kakaoOAuthClient.getToken(authorizationCode));
-    String email = "kakaouser" + userProperty.getId() + "@kakao.com";
+    String email = userProperty.makeKakaoEmail();
     Optional<Member> memberOptional = repository.findByEmail(email);
     if (memberOptional.isEmpty()) {
       //회원가입
