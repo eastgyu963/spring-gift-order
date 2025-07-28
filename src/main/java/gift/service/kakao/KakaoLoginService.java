@@ -1,8 +1,8 @@
-package gift.service;
+package gift.service.kakao;
 
 import gift.auth.KakaoOAuthClient;
 import gift.config.JwtProvider;
-import gift.dto.KakaoUserProperty;
+import gift.dto.kakao.KakaoUserProperty;
 import gift.entity.Member;
 import gift.entity.Token;
 import gift.repository.member.MemberJpaRepository;
