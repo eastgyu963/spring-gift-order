@@ -1,7 +1,7 @@
 package gift.controller;
 
 import gift.entity.Token;
-import gift.service.KakaoLoginService;
+import gift.service.kakao.KakaoLoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
