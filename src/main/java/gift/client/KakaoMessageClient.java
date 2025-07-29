@@ -4,7 +4,6 @@ import gift.dto.kakao.KakaoMessageResponse;
 import gift.exception.KakaoApiResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -19,10 +18,8 @@ public class KakaoMessageClient {
   private final String baseUrl = "https://kapi.kakao.com";
 
   private final RestClient restclient;
-  private final String redirectUri;
 
-  public KakaoMessageClient(RestClient.Builder builder,
-      @Value("${kakao.redirect-uri}") String redirectUri) {
+  public KakaoMessageClient(RestClient.Builder builder) {
     SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
     factory.setReadTimeout(6000);
     factory.setConnectTimeout(6000);
@@ -31,7 +28,6 @@ public class KakaoMessageClient {
         .requestFactory(factory)
         .baseUrl(baseUrl)
         .build();
-    this.redirectUri = redirectUri;
   }
 
   public void sendToMe(String accessToken, String message) {
