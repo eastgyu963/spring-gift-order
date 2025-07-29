@@ -5,11 +5,13 @@ import gift.dto.order.OrderResponseDto;
 import gift.entity.Member;
 import gift.entity.Option;
 import gift.entity.Order;
+import gift.entity.Wish;
 import gift.exception.notfound.OptionNotFoundException;
 import gift.repository.option.OptionJpaRepository;
 import gift.repository.order.OrderJpaRepository;
 import gift.repository.wish.WishJpaRepository;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,7 +34,11 @@ public class OrderServiceImpl implements OrderService {
     Option option = optionRepository.findById(requestDto.getOptionId()).orElseThrow(() ->
         new OptionNotFoundException("옵션이 존재하지 않습니다"));
     option.subtractQuantity(requestDto.getQuantity());
-    wishRepository.findByMemberIdAndProductId(member.getId(), option.getProduct().getId());
+    Optional<Wish> optionalWish = wishRepository.findByMemberIdAndProductId(
+        member.getId(), option.getProduct().getId());
+    if (optionalWish.isPresent()) {
+      wishRepository.deleteByMemberIdAndProductId(member.getId(), option.getProduct().getId());
+    }
     Order order = new Order(requestDto.getQuantity(), requestDto.getMessage(), member, option);
     Order save = orderRepository.save(order);
     return new OrderResponseDto(save);
