@@ -1,4 +1,4 @@
-package gift.auth;
+package gift.client.auth;
 
 
 import gift.dto.kakao.KakaoAccessTokenResponse;
