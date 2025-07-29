@@ -5,6 +5,7 @@ import gift.dto.order.OrderResponseDto;
 import gift.entity.Member;
 import gift.entity.Option;
 import gift.entity.Order;
+import gift.exception.notfound.OptionNotFoundException;
 import gift.repository.option.OptionJpaRepository;
 import gift.repository.order.OrderJpaRepository;
 import gift.repository.wish.WishJpaRepository;
@@ -29,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public OrderResponseDto order(Member member, OrderRequestDto requestDto) {
     Option option = optionRepository.findById(requestDto.getOptionId()).orElseThrow(() ->
-        new IllegalStateException("옵션이 존재하지 않습니다"));
+        new OptionNotFoundException("옵션이 존재하지 않습니다"));
     option.subtractQuantity(requestDto.getQuantity());
     wishRepository.findByMemberIdAndProductId(member.getId(), option.getProduct().getId());
     Order order = new Order(requestDto.getQuantity(), requestDto.getMessage(), member, option);
