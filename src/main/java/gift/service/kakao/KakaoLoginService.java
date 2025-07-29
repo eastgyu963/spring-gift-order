@@ -1,6 +1,6 @@
 package gift.service.kakao;
 
-import gift.auth.KakaoOAuthClient;
+import gift.client.auth.KakaoOAuthClient;
 import gift.config.JwtProvider;
 import gift.dto.kakao.KakaoUserProperty;
 import gift.entity.Member;
@@ -30,13 +30,14 @@ public class KakaoLoginService {
 
   @Transactional
   public Token loginWithAuthorizationCode(String authorizationCode) {
-    KakaoUserProperty userProperty = kakaoOAuthClient.getKakaoUserProperty(
-        kakaoOAuthClient.getToken(authorizationCode));
+    String kakaoAccessToken = kakaoOAuthClient.getToken(authorizationCode);
+
+    KakaoUserProperty userProperty = kakaoOAuthClient.getKakaoUserProperty(kakaoAccessToken);
     String email = userProperty.makeKakaoEmail();
     Optional<Member> memberOptional = repository.findByEmail(email);
     if (memberOptional.isEmpty()) {
       //회원가입
-      Member member = repository.save(new Member(email, null));
+      Member member = repository.save(new Member(email, null, kakaoAccessToken));
       //소셜로그인 시 비밀번호는 null로 설정
       return jwtProvider.generateToken(member);
     } else {

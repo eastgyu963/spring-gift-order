@@ -1,59 +1,80 @@
 package gift.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Member {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+  @Column(nullable = false, unique = true)
+  private String email;
 
-    @Column(nullable = true)
-    private String password;
+  @Column(nullable = true)
+  private String password;
 
-    public Member(Long id, String email, String password) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-    }
+  private String kakaoAccessToken;
 
-    public Member(String email, String password) {
-        this(null, email, password);
-    }
+  public Member(Long id, String email, String password, String accessToken) {
+    this.id = id;
+    this.email = email;
+    this.password = password;
+    this.kakaoAccessToken = accessToken;
+  }
 
-    public Member() {
-    }
+  public Member(String email, String password, String accessToken) {
+    this(null, email, password, accessToken);
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public Member(String email, String password) {
+    this(null, email, password, null);
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    this.password = password;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public Member() {
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public boolean isPasswordMatch(String password) {
-        return this.password.equals(password);
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public boolean isPasswordNotMatch(String password) {
-        return !this.password.equals(password);
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void update(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
+  public String getPassword() {
+    return password;
+  }
+
+  public String getKakaoAccessToken() {
+    return kakaoAccessToken;
+  }
+
+  public void setKakaoAccessToken(String kakaoAccessToken) {
+    this.kakaoAccessToken = kakaoAccessToken;
+  }
+
+  public boolean isPasswordMatch(String password) {
+    return this.password.equals(password);
+  }
+
+  public boolean isPasswordNotMatch(String password) {
+    return !this.password.equals(password);
+  }
+
+  public void update(String email, String password) {
+    this.email = email;
+    this.password = password;
+  }
 }
