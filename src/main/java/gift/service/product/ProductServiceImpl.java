@@ -2,6 +2,7 @@ package gift.service.product;
 
 import gift.dto.product.ProductRequestDto;
 import gift.dto.product.ProductResponseDto;
+import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.NameHasKakaoException;
 import gift.exception.notfound.ProductNotFoundException;
@@ -49,6 +50,8 @@ public class ProductServiceImpl implements ProductService {
     validateKakaoNameApproval(checkProduct, requestDto);
     Product product = productRepository.save(
         new Product(requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl()));
+    optionRepository.save(new Option("기본옵션", 100, product));
+
     return new ProductResponseDto(product);
   }
 

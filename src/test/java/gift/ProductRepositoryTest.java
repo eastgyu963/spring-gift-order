@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import gift.entity.Product;
 import gift.repository.product.ProductJpaRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -19,6 +20,16 @@ public class ProductRepositoryTest {
 
   @Autowired
   private ProductJpaRepository repository;
+
+  @BeforeEach
+  void setUp() {
+    Long price = 0L;
+    for (int i = 1; i <= 21; i++) {
+      price++;
+      repository.save(
+          new Product("product" + Integer.toString(i), price, "https://asd" + Integer.toString(i)));
+    }
+  }
 
   @Test
   void 상품저장() {
@@ -46,9 +57,6 @@ public class ProductRepositoryTest {
 
   @Test
   void 상품_페이지네이션테스트() {
-    for (int i = 1; i <= 21; i++) {
-      repository.save(new Product("이름", 1L, "https://asd"));
-    }
     Pageable pageable = PageRequest.of(0, 5);
 
     Page<Product> result = repository.findAll(pageable);
@@ -57,14 +65,21 @@ public class ProductRepositoryTest {
     assertThat(result.getTotalElements()).isEqualTo(22);//datasql로 들어가는 초기데이터로 인해 +1
     assertThat(result.getTotalPages()).isEqualTo(5);
 
-    assertThat(result.getContent().get(0).getName()).isEqualTo("물통");
-    assertThat(result.getContent().get(0).getPrice()).isEqualTo(1000L);
-    assertThat(result.getContent().get(0).getImageUrl()).isEqualTo("https://www.naver.com");
-    for (int i = 1; i < 5; i++) {
-      assertThat(result.getContent().get(i).getName()).isEqualTo("이름");
-      assertThat(result.getContent().get(i).getPrice()).isEqualTo(1L);
-      assertThat(result.getContent().get(i).getImageUrl()).isEqualTo("https://asd");
-    }
+    assertThat(result.getContent().getFirst().getName()).isEqualTo("물통");
+    assertThat(result.getContent().getFirst().getPrice()).isEqualTo(1000L);
+    assertThat(result.getContent().getFirst().getImageUrl()).isEqualTo("https://www.naver.com");
+
+    assertThat(result.getContent().get(1).getName()).isEqualTo("product1");
+    assertThat(result.getContent().get(1).getPrice()).isEqualTo(1L);
+    assertThat(result.getContent().get(1).getImageUrl()).isEqualTo("https://asd1");
+
+    assertThat(result.getContent().get(2).getName()).isEqualTo("product2");
+    assertThat(result.getContent().get(2).getPrice()).isEqualTo(2L);
+    assertThat(result.getContent().get(2).getImageUrl()).isEqualTo("https://asd2");
+
+    assertThat(result.getContent().get(3).getName()).isEqualTo("product3");
+    assertThat(result.getContent().get(3).getPrice()).isEqualTo(3L);
+    assertThat(result.getContent().get(3).getImageUrl()).isEqualTo("https://asd3");
 
   }
 

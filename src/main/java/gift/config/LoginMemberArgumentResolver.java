@@ -1,8 +1,6 @@
 package gift.config;
 
-import gift.dto.member.MemberResponseDto;
-import gift.entity.Member;
-import gift.service.member.MemberService;
+import gift.repository.member.MemberJpaRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.core.MethodParameter;
@@ -17,10 +15,10 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
   private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
   private final String AuthorizationCategory = "Bearer";
-  private final MemberService service;
+  private final MemberJpaRepository repository;
 
-  public LoginMemberArgumentResolver(MemberService service) {
-    this.service = service;
+  public LoginMemberArgumentResolver(MemberJpaRepository repository) {
+    this.repository = repository;
   }
 
   @Override
@@ -46,8 +44,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         .parseClaimsJws(token)
         .getBody();
     Long memberId = Long.parseLong(claims.getSubject());
-
-    MemberResponseDto responseDto = service.findMemberById(memberId);
-    return new Member(responseDto.getId(), responseDto.getEmail(), responseDto.getPassword());
+    return repository.findById(memberId)
+        .orElseThrow(() -> new IllegalStateException("토큰에 해당하는 멤버가 없습니다."));
   }
 }
