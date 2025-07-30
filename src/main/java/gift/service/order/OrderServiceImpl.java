@@ -11,6 +11,7 @@ import gift.repository.option.OptionJpaRepository;
 import gift.repository.order.OrderJpaRepository;
 import gift.repository.wish.WishJpaRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +43,22 @@ public class OrderServiceImpl implements OrderService {
     Order order = new Order(requestDto.getQuantity(), requestDto.getMessage(), member, option);
     Order save = orderRepository.save(order);
     return new OrderResponseDto(save);
+  }
+
+  @Override
+  public List<OrderResponseDto> findByOptionId(Long optionId) {
+    return orderRepository
+        .findByOptionId(optionId)
+        .stream()
+        .map(OrderResponseDto::new)
+        .toList();
+  }
+
+  @Override
+  public OrderResponseDto findById(Long orderId) {
+    return orderRepository
+        .findById(orderId)
+        .map(OrderResponseDto::new)
+        .orElseThrow(() -> new OptionNotFoundException("해당하는 id의 옵션이 존재하지 않습니다."));
   }
 }
